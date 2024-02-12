@@ -1,0 +1,20 @@
+version: "3"
+services:
+  db:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - db-data-example:/var/lib/postgresql/data
+      - ./setup-db.sh:/docker-entrypoint-initdb.d/postgres-setup.sh
+    healthcheck:
+      test: ["CMD", "psql", "-U", "postgres", "-c", "\\q"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+volumes:
+  db-data-example:
